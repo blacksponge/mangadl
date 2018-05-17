@@ -1,4 +1,5 @@
 import scrapy
+import copy
 
 
 class LireScanScrapMangaSpider(scrapy.Spider):
@@ -19,16 +20,16 @@ class LireScanScrapMangaSpider(scrapy.Spider):
             url + manga_url, self.parse, meta={'item': item})
 
     def parse(self, response):
-        item = response.meta['item']
         for option in response.css('select#chapitres option'):
+            item = dict(response.meta['item'])
             item['chapter'] = option.css('::text').extract_first()
             yield response.follow(
                 option.css('::attr(value)').extract_first(),
                 self.parse_pages, meta={'item': item})
 
     def parse_pages(self, response):
-        item = response.meta['item']
         for option in response.css('select#pages option'):
+            item = dict(response.meta['item'])
             item['page'] = option.css('::text').extract_first()
             yield response.follow(
                 option.css('::attr(value)').extract_first(),

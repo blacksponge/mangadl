@@ -1,5 +1,4 @@
 import scrapy
-import copy
 from scrapy import signals
 
 
